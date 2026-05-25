@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+:root {
+  --c-ink: #08090e;
+  --c-ink-soft: #0e1018;
+  --c-panel: #141826;
+  --c-panel-2: #181d2c;
+  --c-line: #262c3c;
+  --c-gold: #c8a24a;
+  --c-gold-bright: #ecd08a;
+  --c-sim: #5eead4;
+  --c-parchment: #e9e5d8;
+  --c-muted: #9a9c93;
+}
+
+@theme inline {
+  --color-ink: var(--c-ink);
+  --color-ink-soft: var(--c-ink-soft);
+  --color-panel: var(--c-panel);
+  --color-panel-2: var(--c-panel-2);
+  --color-line: var(--c-line);
+  --color-gold: var(--c-gold);
+  --color-gold-bright: var(--c-gold-bright);
+  --color-sim: var(--c-sim);
+  --color-parchment: var(--c-parchment);
+  --color-muted: var(--c-muted);
+
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--c-ink);
+  color: var(--c-parchment);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  /* Faint "rendered starfield" backdrop — ancient sky meets simulation grid. */
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, rgba(236, 208, 138, 0.25), transparent),
+    radial-gradient(1px 1px at 75% 18%, rgba(94, 234, 212, 0.22), transparent),
+    radial-gradient(1px 1px at 60% 70%, rgba(233, 229, 216, 0.18), transparent),
+    radial-gradient(1px 1px at 35% 85%, rgba(200, 162, 74, 0.2), transparent),
+    radial-gradient(900px 600px at 50% -10%, rgba(94, 234, 212, 0.05), transparent);
+  background-attachment: fixed;
+}
+
+::selection {
+  background: var(--c-gold);
+  color: #0a0a0a;
+}
+
+/* Thin gradient rule used as a section divider. */
+.rule-gradient {
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--c-gold) 40%,
+    var(--c-sim) 60%,
+    transparent
+  );
+  opacity: 0.45;
+}

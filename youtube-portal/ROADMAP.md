@@ -99,6 +99,51 @@ science), badge by verdict. Click a node → the entry + its sources. This is th
 
 ---
 
+---
+
+## Research agents — "the searchers"
+
+The data isn't gathered by one neutral voice. It's gathered by a **cast of
+persona-driven research agents** — *the searchers* — split across the two
+tracks:
+
+- **Science side (2–3 agents):** hunt for factual, written-down, citable
+  evidence — papers, excavation reports, datasets.
+- **Theory side (3–4 agents):** investigate the alternative ideas. Each one
+  researches *as if its position is real* — looking **for** the supporting
+  evidence and the strongest case, **not** from a "this is fake" mindset.
+
+This is deliberate: each agent **advocates** (steelmans) a stance. Trust
+doesn't come from any one agent being neutral — it comes from **opposing agents
++ visible sources + a separate verdict**. Two hard rules keep it honest:
+
+1. **Real sources only.** A persona shapes *what an agent looks for and how it
+   argues* — never whether it invents evidence. Every finding cites a real,
+   checkable source.
+2. **The verdict is separate.** Agents produce positions + evidence; the
+   site's verdict badge (proven / contested / debunked / …) is applied on top,
+   so a passionately-argued theory can still be labeled `contested`.
+
+Agents map onto the tracks and paths: a theory-side searcher produces
+`conspiracy` positions; a science-side searcher produces `science` positions;
+together they fill out a subject's competing paths.
+
+### Character sheets (reuse the gremlin-forged pattern)
+
+Each agent is defined by a **character sheet** — persona, beliefs, research
+style, a portrait/image, and background — the same pattern you've built before:
+
+- Stored as an editable **`.md` file** (one per agent) = the source of truth.
+- **Surfaced in the website itself** — a "Meet the searchers" area showing each
+  agent's sheet, image, and how it's built, editable from there.
+- Easy to modify → change the persona, change how that agent researches.
+
+> Reuse note: this character-sheet system already exists in your other projects
+> (gremlin-forged & friends). Same access issue as the boilerplate/video code —
+> we need it reachable to reuse it directly (see Open questions).
+
+---
+
 ## Access tiers & feature flags *(all flags ON now; flippable behind members later)*
 
 The site is two things at once: a **free reading library** and a **paid
@@ -228,13 +273,14 @@ fetch(input)  →  extract text / transcript  →  draft normalized flat files
 | **0 — Portal** *(done)* | Channel landing site | Home, topics, breakdowns, sources, merch. |
 | **1 — Modular foundation** | The reusable backbone | `src/modules/` structure, generic KB types (subjects/positions/sources/crossrefs), `flags` config + `canUse()` (all ON), content-pack split, schema validator. |
 | **2 — Ingestion tools** *(priority)* | Pull data in | Source-adapter contract + `web` / `pdf` / `doc` adapters → normalized flat files; "AI drafts → human approves"; YouTube adapter slot for your video-project code. |
-| **3 — Local MongoDB + seed** | Files → DB | `docker-compose` Mongo, `npm run db:seed`, indexes. Idempotent. |
-| **4 — Search & pages** | The "Guide" feel | Search w/ verdict + track badges, filters, subject & position pages showing claim / sources-with-provenance. |
-| **5 — Paths & collation** | Connect theories | Multi-position subjects (conspiracy vs science tracks), cross-reference matching/collation queries. |
-| **6 — Theory map** | The "wow" visual | Branching family-tree/graph of positions: derive / bridge / compete / merge; color by track, badge by verdict. |
-| **7 — Debunking track** | Review lane | `debunks` entries built on cited research, linking back to proven entries. Separate from main channel. |
-| **8 — Polish & launch** | Ship it | Performance, mobile, SEO, deploy, real branding/merch. |
-| **9 — Membership & paywall** *(later)* | Flip the flags | Auth + Patreon; set premium features to `members-only`. Gates already exist → config, not rewrite. |
+| **3 — Research agents** | The searchers | Character-sheet system (`.md` per agent) reused from gremlin-forged; two rosters (science 2–3, theory 3–4); "Meet the searchers" page w/ portraits; agents drive track-specific advocacy research (real sources only). |
+| **4 — Local MongoDB + seed** | Files → DB | `docker-compose` Mongo, `npm run db:seed`, indexes. Idempotent. |
+| **5 — Search & pages** | The "Guide" feel | Search w/ verdict + track badges, filters, subject & position pages showing claim / sources-with-provenance. |
+| **6 — Paths & collation** | Connect theories | Multi-position subjects (conspiracy vs science tracks), cross-reference matching/collation queries. |
+| **7 — Theory map** | The "wow" visual | Branching family-tree/graph of positions: derive / bridge / compete / merge; color by track, badge by verdict. |
+| **8 — Debunking track** | Review lane | `debunks` entries built on cited research, linking back to proven entries. Separate from main channel. |
+| **9 — Polish & launch** | Ship it | Performance, mobile, SEO, deploy, real branding/merch. |
+| **10 — Membership & paywall** *(later)* | Flip the flags | Auth + Patreon; set premium features to `members-only`. Gates already exist → config, not rewrite. |
 
 ---
 
@@ -257,9 +303,10 @@ Real, fringe, and fictional — each a subject with conspiracy + science paths:
 - **Ingestion stack:** Node/TypeScript inside the app, vs. a separate **Python**
   worker that reuses your existing video-project skills (yt-dlp / Whisper) and
   emits flat files. Decides how Phase 2 is built. *(Needs your call.)*
-- **Reusing your existing code:** the boilerplate / video / idea projects aren't
-  reachable from here. Add them to this repo (or paste key files), or build
-  fresh behind clean interfaces and wire yours in later? *(Needs your call.)*
+- **Reusing your existing code:** the boilerplate, video/idea projects, and the
+  **character-sheet system (gremlin-forged)** aren't reachable from here. Add
+  them to this repo (or paste key files), or build fresh behind clean
+  interfaces and wire yours in later? *(Needs your call.)*
 - **Legal / ToS:** downloading YouTube + scraping sites/PDFs has terms and
   copyright limits. We store *sources, citations, and our own summaries* — not
   wholesale copyrighted text. Worth a clear rule early.

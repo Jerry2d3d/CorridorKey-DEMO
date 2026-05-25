@@ -1,49 +1,101 @@
-# Roadmap — The Throughline
+# Roadmap — The Throughline (and the reusable knowledge engine behind it)
 
 > The channel is the hook. The website is the receipts.
 >
-> Videos pull people in with the *ideas*. They don't have to be a wall of
-> citations. Every video ends the same way: **"want to know how I found this?
-> Go to the site — every source is there."** This roadmap is the plan for
-> turning the site into that destination: a searchable, cross-referenced
-> knowledge base.
+> Videos pull people in with the *ideas* — no wall of citations. Every video
+> ends the same way: **"want to know how I found this? Go to the site — every
+> source is there."** This roadmap turns the site into that destination: a
+> searchable, cross-referenced, *interactive* knowledge base.
 
 ---
 
 ## North star
 
 A **Hitchhiker's-Guide-style knowledge base** you can actually use. A visitor
-lands, searches a thing — *the pyramids, mudflood, the Emerald (green) tablets,
-a "fictional" city* — and instantly sees:
+searches a thing — *the pyramids, mudflood, the Emerald (green) tablets, where
+is Atlantis* — and sees what it is, whether it's proven/contested/debunked,
+the competing theories, and **where every claim came from**.
 
-- **What it is** — a plain-language entry.
-- **The verdict** — is this *proven*, *supported*, *contested*, an *open
-  question*, *debunked*, or *fiction*?
-- **The science behind it** — the real mechanisms / evidence.
-- **Where the content comes from** — every source, and crucially *where each
-  source got it from* (provenance, not just a link dump).
-- **Cross-references** — what this supports, what it contradicts, and what it
-  debunks.
+And critically: **the engine is reusable.** This same system should power a
+future *Hitchhiker's Guide to the Galaxy* project and others. So we build a
+**generic knowledge engine** + a thin, swappable **content layer** on top —
+never hardcode "ancient history" into the core.
 
-Two intertwined layers:
+---
 
-1. **The "this is real / proven" layer** — the well-supported core.
-2. **The debunking layer** — specific claims (and creators) we show are wrong,
-   *using our own research*, always linking back to the proven entries.
+## Reuse & modularity — the core build principle
+
+Everything is built to be **lifted out and reused**.
+
+- **Generic engine, themed content.** The core (entries, sources, theory
+  paths, cross-references, search, ingestion, flags) knows nothing about
+  history. A *content pack* (topics, branding, seed data) sits on top. Swap the
+  pack → new product (e.g. the Galaxy guide).
+- **Self-contained modules.** Each feature lives in its own folder under
+  `src/modules/<feature>/` with its own components, types, data access, and
+  seed data — so it can be copied into another project with minimal wiring.
+- **Pluggable ingestion adapters.** Each data source (YouTube, web page, PDF,
+  doc) is an independent adapter implementing one shared contract. Add a source
+  = add an adapter. Nothing else changes.
+- **Component-per-file, reusable by default.** Small, composable components;
+  no feature reaches into another's internals — they talk through typed
+  interfaces.
+
+> **Open item:** you have a **boilerplate project** and a **video / idea
+> project** with patterns and code you want reused. I can't access them from
+> here. To actually reuse them we need to bring them into reach (see Open
+> questions). Until then I'll build behind clean interfaces so your code drops
+> in later.
 
 ---
 
 ## Content philosophy
 
-- **Video ≠ essay.** The YouTube video carries the idea and the curiosity.
-  Depth, citations, and the paper trail live on the site.
-- **Always point home.** External links are fine in a video description, but
-  the canonical "here's all my research" destination is always this website.
-- **Debunking is a separate track.** Reviewing other people and explaining why
-  they're wrong is *not* part of the main channel. It's its own content lane,
-  and it leans entirely on the research database to make the case.
-- **Provenance over assertion.** The differentiator is "where did you get
-  this, and where did *they* get it?" Every entry has to answer that.
+- **Video ≠ essay.** The video carries the idea; depth and the paper trail
+  live on the site.
+- **Always point home.** External links can go in a video description, but the
+  canonical "here's all my research" destination is always this website.
+- **Two tracks, side by side:**
+  - **Conspiracy / theory track** — "it could be this, or this, or that."
+    The ideas, the claims, the alternative histories.
+  - **Science / evidence track** — what's actually written down and can be
+    sourced as factual.
+  - Both are first-class. Sometimes the *evidence itself* is contested
+    (archaeologists disagree), so the science track can branch too.
+- **Provenance over assertion.** "Where did you get this, and where did *they*
+  get it?" Every entry answers that.
+
+---
+
+## The paths model (theories that branch)
+
+The signature feature. A **Subject** is a question — *"Where is Atlantis?"*
+It holds multiple **Positions** (a.k.a. paths), each a stance someone takes:
+
+- conspiracy paths: *Atlantic Ocean · Antarctica · Santorini · the Azores …*
+  (ten competing locations)
+- science paths: *"a Platonic allegory, not a real place"* · *"no physical
+  evidence"* · *"possibly a folk memory of a real flood"*
+
+Each position has:
+
+- a **track**: `conspiracy` | `science` | `contested`
+- a **verdict**: `proven` · `supported` · `contested` · `open` · `debunked` ·
+  `fiction`
+- its own **sources** (with provenance)
+- **relations** to other positions: `derives-from`, `became`, `competes-with`,
+  `supports`, `contradicts`, `debunks`
+
+Because positions relate to each other, they form a **graph** — one theory
+spins off another, two converge, a conspiracy claim gets adopted (or refuted)
+by the science track. That graph is the thing we visualize.
+
+### The visualization (a later, high-value phase)
+
+A **branching family-tree / map of theories**: nodes are positions, edges show
+how they derive, bridge, compete, and merge. Color by track (conspiracy vs
+science), badge by verdict. Click a node → the entry + its sources. This is the
+"wow" tool — but it depends on the data + paths existing first.
 
 ---
 
@@ -52,125 +104,120 @@ Two intertwined layers:
 The site is two things at once: a **free reading library** and a **paid
 research tool**.
 
-- **Free — anyone, all day:** read every flat entry, browse topics, read an
-  entry's own source list. The *content* is open.
-- **Paid — Patreon / members:** the *tools* that turn the content into a
-  research instrument — search, cross-referencing, and collation. e.g.
-  *"how many pyramids are there, where are they, and how do they differ?"* is a
-  cross-reference query across many entries; that's the paywalled value.
+- **Free — anyone, all day:** read every entry, browse topics, read an entry's
+  own source list. The *content* is open.
+- **Paid — Patreon / members:** the *tools* that turn content into a research
+  instrument — search, cross-referencing, collation, the theory-map. e.g.
+  *"how many pyramids are there, where, and how do they differ?"* is a
+  cross-reference query; that's the paywalled value.
 
 | Capability | Free | Member (paid) |
 |---|---|---|
-| Read an individual flat entry | ✅ | ✅ |
+| Read an individual entry | ✅ | ✅ |
 | Browse topics / categories | ✅ | ✅ |
 | See an entry's own sources | ✅ | ✅ |
 | **Full-text search** | — | ✅ |
-| **Cross-reference queries** (compare/relate many entries) | — | ✅ |
+| **Cross-reference queries** | — | ✅ |
 | **Collation / aggregation** ("how many, where, differences") | — | ✅ |
-| **Connections / graph view** | — | ✅ |
+| **Theory map / connections graph** | — | ✅ |
 | Saved research / collections | — | ✅ |
 
 **Build principle — flags everywhere now, all turned ON.** Every capability is
 wrapped in a feature flag from day one. **Right now every flag is ON**, so the
-whole site is open to everyone and nothing slows down development. The point is
-purely architectural: each feature is built *as if* it might one day need to be
-flipped off and put behind a logged-in member, so when that day comes it's a
-config change — not a rewrite.
-
-How it's structured:
-
-- A single `flags` config lists every toggleable capability (search,
-  crossref, collation, graph, saved-collections, …), all defaulting to `on`
-  and open to everyone.
-- A thin `canUse(feature, user)` gate wraps each capability in the data/UI
-  layer. Today it always returns `true`. Later, flipping a feature to
-  `members-only` makes that one gate check the user's membership — everything
-  else is untouched.
-- No auth, no Patreon, no paywall is built yet. We're only laying the seams so
-  they can be added later without unpicking the app.
+site is fully open and nothing slows development. Each feature is built *as if*
+it might one day move behind a logged-in member — so when that day comes it's a
+config change, not a rewrite. A single `flags` config + a thin
+`canUse(feature, user)` gate (today always `true`) is the whole mechanism. No
+auth/Patreon/paywall is built yet — we only lay the seams.
 
 ---
 
 ## Architecture (target)
 
 ```
- Flat files (Markdown + YAML / JSON)        ← source of truth, in git, human-editable
-            │
-            │  npm run db:seed   (ingestion script, idempotent)
-            ▼
- Local MongoDB  (entries, sources, claims, crossrefs)   ← fast search & queries
-            │
-            │  MongoDB driver
-            ▼
- Next.js site  (search UI, entry pages, debunk pages, cross-reference graph)
+ Sources (YouTube · web · PDF · docs)
+        │   ingestion adapters  (fetch → extract → transcribe → draft)
+        ▼
+ Flat files (Markdown + YAML / JSON)     ← source of truth, in git, human-reviewed
+        │   npm run db:seed   (idempotent)
+        ▼
+ Local MongoDB  (subjects · positions · entries · sources · crossrefs)
+        │   MongoDB driver
+        ▼
+ Next.js site  (search · entry/subject pages · theory map · debunking)
+        └── generic engine + swappable content pack, gated by feature flags
 ```
 
-**Why this shape**
-
-- **Flat files** stay the source of truth: version-controlled, diffable,
-  reviewable, and they survive even if the database is wiped or rebuilt.
-- **Local MongoDB** is the query/search engine, populated *from* the flat
-  files. We never hand-edit the database directly — we edit files and re-seed.
-- The seed step is **re-runnable**: change a file, run `db:seed`, the DB
-  updates. No drift.
+- **Adapters** turn any source into normalized **flat files**. Humans review
+  before anything is "true."
+- **Flat files** are the durable source of truth (survive a DB wipe).
+- **MongoDB** is the query/search engine, seeded *from* the files. Never
+  hand-edited. Re-seeding has no drift.
 
 ---
 
 ## Data model (first draft)
 
-### `entries` — the core unit (a topic, claim, place, artifact, event)
-
 ```yaml
-slug: "how-were-the-pyramids-built"
-title: "How were the pyramids built?"
-kind: "topic"            # topic | location | artifact | person | event | claim
-verdict: "supported"     # proven | supported | contested | open | debunked | fiction
-summary: "One-paragraph plain-language answer."
-body: |                  # Markdown — the full entry, incl. 'the science behind it'
-  ...
-tags: ["egypt", "engineering", "ancient-history"]
-videoId: "..."           # optional — the YouTube video this came from
-claims:                  # the specific assertions this entry makes or examines
-  - statement: "Ramps were used to move blocks."
-    verdict: "supported"
-    evidenceFor:  ["src-lehner-2008", "src-..."]
-    evidenceAgainst: ["src-..."]
-sources: ["src-lehner-2008", "src-..."]   # references into the sources collection
-crossrefs:
-  - to: "mudflood-theory"
-    relation: "contradicts"   # supports | contradicts | debunks | related | builds-on
+# subjects — a question with competing answers
+subject:
+  slug: "where-is-atlantis"
+  title: "Where is Atlantis?"
+  summary: "..."
+  positions: ["atlantis-atlantic", "atlantis-santorini", "atlantis-allegory", ...]
+
+# positions — one stance/path on a subject
+position:
+  slug: "atlantis-santorini"
+  subject: "where-is-atlantis"
+  track: "science"            # conspiracy | science | contested
+  claim: "Atlantis is a memory of the Minoan eruption of Thera/Santorini."
+  verdict: "contested"        # proven | supported | contested | open | debunked | fiction
+  body: "..."                 # Markdown
+  sources: ["src-...", "src-..."]
+  relations:
+    - to: "atlantis-allegory"
+      kind: "competes-with"   # derives-from | became | competes-with | supports | contradicts | debunks
+
+# sources — canonical, reusable references (the heart of it)
+source:
+  id: "src-..."
+  label: "..."; type: "book|paper|article|video|primary-artifact|dataset"
+  author: "..."; year: 2008; url: "https://..."
+  provenance: "Where I found it AND where IT got its data — the paper trail."
+  reliability: "high|medium|low|disputed"
+
+# debunks — the review lane (its own track)
+debunk:
+  slug: "..."; targetClaim: "..."; targetWho: "..."
+  reasoning: "..."; usesSources: [...]; pointsTo: ["subject-or-position-slug"]
 ```
 
-### `sources` — canonical, reusable references (this is the heart of it)
+---
 
-```yaml
-id: "src-lehner-2008"
-label: "Mark Lehner, The Complete Pyramids"
-type: "book"            # book | paper | article | video | primary-artifact | dataset
-author: "Mark Lehner"
-year: 2008
-url: "https://..."      # optional
-provenance: "Where I found it AND where it got its data — the paper trail."
-reliability: "high"     # high | medium | low | disputed
+## Ingestion — bring data in from anywhere *(top priority)*
+
+> Per your direction, the **first** real capability after the foundation:
+> pull data from **web pages, PDFs, docs, and any web source**, then YouTube.
+
+Each source type is an **adapter** with one shared contract:
+
+```
+fetch(input)  →  extract text / transcript  →  draft normalized flat files
+                 (entry + candidate claims + flagged "needs a source here")
+                                   │
+                                   ▼
+                        human reviews & commits  →  db:seed  →  collate/match
 ```
 
-### `debunks` — the debunking track (its own content lane)
-
-```yaml
-slug: "debunking-claim-x"
-targetClaim: "The specific external claim being addressed."
-targetWho: "Creator / source making the claim (optional)."
-verdict: "debunked"
-reasoning: |            # Markdown — the argument, built on our research
-  ...
-usesSources: ["src-...", "src-..."]    # our research that does the refuting
-pointsTo: ["how-were-the-pyramids-built"]  # the proven entries it links back to
-```
-
-> **Verdict taxonomy** (shown as colored badges in the UI):
-> `proven` · `supported` · `contested` · `open` · `debunked` · `fiction`.
-> This is what lets the site say *"this is real"* vs *"this proves them wrong"*
-> vs *"a great story, but not established."*
+- **AI drafts, human approves.** The pipeline produces *drafts*; nothing
+  auto-publishes as truth.
+- **Collation/matching.** Once data is in, we match across subjects — the same
+  place/claim/source showing up in multiple inputs gets linked into positions
+  and paths.
+- **Adapters to build:** `web` (article extraction), `pdf`, `doc`, then
+  `youtube` (download + transcript). The YouTube adapter is where your existing
+  video-project skills should plug in.
 
 ---
 
@@ -178,44 +225,47 @@ pointsTo: ["how-were-the-pyramids-built"]  # the proven entries it links back to
 
 | Phase | Goal | Key deliverables |
 |------|------|------------------|
-| **0 — Portal** *(done)* | Channel landing site | Home, topics, breakdowns, sources section, merch. Markdown content. |
-| **1 — Data model + flat files** | Lock the schema | `content/entries/*.md`, `content/sources/*.yml`, TypeScript types + a validator that rejects bad/missing-source entries. Add the `flags` config + `canUse()` gate (all flags ON). |
-| **2 — Local MongoDB + seed** | Files → DB | `docker-compose` for local Mongo, `scripts/seed.ts` (`npm run db:seed`), text indexes for search. Idempotent re-seeding. |
-| **3 — Search experience** | The "Guide" feel | Prominent search, results with verdict badges, filters by kind + verdict, entry pages showing summary / science / claims / sources-with-provenance. |
-| **4 — Cross-reference layer** | Connect everything | "Supports / Contradicts / Debunks / Related" links on every entry; a simple connections/graph view. |
-| **5 — Debunking track** | Review lane | `debunks` entries, a dedicated section, each one built on cited research and linking back to proven entries. Kept separate from main-channel content. |
-| **6 — Video ingestion pipeline** | Drop a video → draft entry | Transcribe (e.g. Whisper) → auto-draft a structured entry + extract candidate claims + flag "needs a source here" → **human reviews & commits the flat file** → `db:seed`. Video never auto-publishes "truth"; it produces drafts. |
-| **7 — Polish & launch** | Ship it | Performance, mobile, SEO, deploy, real branding, real merch links. |
-| **8 — Membership & paywall** *(later)* | Flip the flags | Auth + Patreon link, then set premium features (search, crossref, collation, graph) to `members-only`. Because the gates already exist, this is config + an auth check — not a rewrite. |
+| **0 — Portal** *(done)* | Channel landing site | Home, topics, breakdowns, sources, merch. |
+| **1 — Modular foundation** | The reusable backbone | `src/modules/` structure, generic KB types (subjects/positions/sources/crossrefs), `flags` config + `canUse()` (all ON), content-pack split, schema validator. |
+| **2 — Ingestion tools** *(priority)* | Pull data in | Source-adapter contract + `web` / `pdf` / `doc` adapters → normalized flat files; "AI drafts → human approves"; YouTube adapter slot for your video-project code. |
+| **3 — Local MongoDB + seed** | Files → DB | `docker-compose` Mongo, `npm run db:seed`, indexes. Idempotent. |
+| **4 — Search & pages** | The "Guide" feel | Search w/ verdict + track badges, filters, subject & position pages showing claim / sources-with-provenance. |
+| **5 — Paths & collation** | Connect theories | Multi-position subjects (conspiracy vs science tracks), cross-reference matching/collation queries. |
+| **6 — Theory map** | The "wow" visual | Branching family-tree/graph of positions: derive / bridge / compete / merge; color by track, badge by verdict. |
+| **7 — Debunking track** | Review lane | `debunks` entries built on cited research, linking back to proven entries. Separate from main channel. |
+| **8 — Polish & launch** | Ship it | Performance, mobile, SEO, deploy, real branding/merch. |
+| **9 — Membership & paywall** *(later)* | Flip the flags | Auth + Patreon; set premium features to `members-only`. Gates already exist → config, not rewrite. |
 
 ---
 
 ## Seed topics (the starting library)
 
-Real, fringe, and fictional — each gets a verdict and a source trail:
+Real, fringe, and fictional — each a subject with conspiracy + science paths:
 
-- **How the pyramids were built** — the engineering vs. the mythology.
-- **Mudflood theory** — what the claim is, what's real, what isn't.
-- **The Emerald / "green" tablets** — text, origin, and what's actually known.
-- **"Fictional" cities** — places that may or may not have existed; flagged
-  `fiction` or `open` until evidence says otherwise.
-- **The science behind it** — the real mechanisms paired with every myth, so
-  the database always offers the grounded explanation next to the wild one.
+- **Where is Atlantis?** — the multi-path showcase (≈10 conspiracy locations vs
+  science's "allegory / no evidence / flood memory").
+- **How were the pyramids built?** — engineering vs. mythology.
+- **Mudflood theory** — what's claimed, what's real, what isn't.
+- **The Emerald / "green" tablets** — text, origin, what's actually known.
+- **"Fictional" cities** — may or may not have existed; `fiction`/`open` until
+  evidence says otherwise.
 
 ---
 
 ## Open questions (to decide as we build)
 
+- **Ingestion stack:** Node/TypeScript inside the app, vs. a separate **Python**
+  worker that reuses your existing video-project skills (yt-dlp / Whisper) and
+  emits flat files. Decides how Phase 2 is built. *(Needs your call.)*
+- **Reusing your existing code:** the boilerplate / video / idea projects aren't
+  reachable from here. Add them to this repo (or paste key files), or build
+  fresh behind clean interfaces and wire yours in later? *(Needs your call.)*
+- **Legal / ToS:** downloading YouTube + scraping sites/PDFs has terms and
+  copyright limits. We store *sources, citations, and our own summaries* — not
+  wholesale copyrighted text. Worth a clear rule early.
 - **Search engine:** start with MongoDB text indexes; graduate to Atlas Search
-  or a dedicated search lib (Meilisearch/Typesense) if we need fuzzy/typo
-  tolerance and facets.
-- **Hosting:** the DB is "local" for authoring/dev. For the live site we'll
-  need a hosted Mongo (Atlas free tier) *or* a build step that bakes the data
-  into static pages. Decide based on how dynamic search needs to be.
-- **Video pipeline depth:** how much do we automate (full auto-draft) vs. keep
-  manual? Default stance: AI drafts, human approves — never auto-publish.
-- **Editorial rules:** what's the bar for each verdict? Write it down so the
-  database stays trustworthy.
-- **Membership provider (Phase 8):** Patreon OAuth vs. a general auth provider
-  (Clerk/Auth.js) that links a Patreon tier. Decide when we actually turn a
-  flag to `members-only` — not before.
+  or Meilisearch/Typesense for fuzzy/faceted search if needed.
+- **Hosting:** local Mongo for dev; live site needs hosted Mongo (Atlas free
+  tier) or a build step baking data into static pages.
+- **Membership provider (Phase 9):** Patreon OAuth vs. an auth provider
+  (Clerk/Auth.js) that links a Patreon tier. Decide only when we flip a flag.
